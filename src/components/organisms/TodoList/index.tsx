@@ -19,9 +19,11 @@ const TodoList = () => {
   const tasks = useTodoListStore((state) => state.tasks);
   const isLoading = useTodoListStore((state) => state.isLoading);
   const error = useTodoListStore((state) => state.error);
+  const favorites = useTodoListStore((state) => state.favorites);
   const getTasks = useTodoListStore((state) => state.getTasks);
   const deleteTask = useTodoListStore((state) => state.deleteTask);
   const updateTask = useTodoListStore((state) => state.updateTask);
+  const changeFavorite = useTodoListStore((state) => state.changeFavorite);
 
   const onObserve = () => {
     console.log('Изменить максимальную длинну');
@@ -33,6 +35,10 @@ const TodoList = () => {
 
   const onUpdateTask = async (task: Task) => {
     await updateTask(task);
+  };
+
+  const onChangeFavorite = (id: number) => {
+    changeFavorite(id);
   };
 
   useEffect(() => {
@@ -67,6 +73,8 @@ const TodoList = () => {
             {tasks.map((task) => (
               <TaskCard
                 task={task}
+                isFavorite={favorites.includes(task.id)}
+                onChangeFavorite={onChangeFavorite}
                 onDelete={onDeleteTask}
                 onUpdate={onUpdateTask}
                 key={task.id}

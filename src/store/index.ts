@@ -1,14 +1,15 @@
 import { create } from 'zustand';
 
 import { Task, TaskFilter } from '@/types';
+import { LocalStorageService } from '@/api';
 
-import { mockTasks } from './data';
 import { TaskApi } from './api';
 import { CreateTaskData } from './types';
 
 type State = {
   filter: TaskFilter;
   tasks: Task[] | null;
+  favorites: number[];
   isCreateLoading: boolean;
   isLoading: boolean;
   error: string;
@@ -16,6 +17,7 @@ type State = {
 
 type Action = {
   changeFilter: (filter: State['filter']) => void;
+  changeFavorite: (id: number) => void;
   getTasks: () => void;
   createTask: (data: CreateTaskData) => void;
   deleteTask: (id: number) => void;
@@ -24,12 +26,24 @@ type Action = {
 
 const useTodoListStore = create<State & Action>((set) => ({
   filter: 'Все',
-  tasks: mockTasks,
+  tasks: null,
+  favorites: LocalStorageService.getFavorites(),
   isCreateLoading: false,
   isLoading: false,
   error: '',
 
   changeFilter: (filter) => set(() => ({ filter })),
+
+  changeFavorite: (id) => {
+    set((state) => {
+      const newFavorites = state.favorites.includes(id)
+        ? state.favorites.filter((item) => item !== id)
+        : [...state.favorites, id];
+
+      LocalStorageService.setFavorites(newFavorites);
+      return { favorites: newFavorites };
+    });
+  },
 
   getTasks: async () => {
     try {
