@@ -21,6 +21,7 @@ const TodoList = () => {
   const error = useTodoListStore((state) => state.error);
   const getTasks = useTodoListStore((state) => state.getTasks);
   const deleteTask = useTodoListStore((state) => state.deleteTask);
+  const updateTask = useTodoListStore((state) => state.updateTask);
 
   const onObserve = () => {
     console.log('Изменить максимальную длинну');
@@ -28,6 +29,10 @@ const TodoList = () => {
 
   const onDeleteTask = async (task: Task) => {
     await deleteTask(task.id);
+  };
+
+  const onUpdateTask = async (task: Task) => {
+    await updateTask(task);
   };
 
   useEffect(() => {
@@ -60,7 +65,12 @@ const TodoList = () => {
         <Container>
           <Space direction="vertical" style={{ display: 'flex' }}>
             {tasks.map((task) => (
-              <TaskCard task={task} onDelete={onDeleteTask} key={task.id} />
+              <TaskCard
+                task={task}
+                onDelete={onDeleteTask}
+                onUpdate={onUpdateTask}
+                key={task.id}
+              />
             ))}
           </Space>
           <InfiniteScroll

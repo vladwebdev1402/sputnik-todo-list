@@ -6,18 +6,21 @@ import { CheckOutlined, EditOutlined, HeartOutlined } from '@ant-design/icons';
 import { Task } from '@/types';
 
 import { TaskCardSkeleton } from './TaskCardSkeleton';
-import { useTodoListStore } from '@/store';
 
 type Props = {
   task: Task;
   onDelete: (task: Task) => void;
+  onUpdate: (task: Task) => void;
 };
 
-const TaskCard: FC<Props> = ({ task, onDelete }) => {
+const TaskCard: FC<Props> = ({ task, onDelete, onUpdate }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isTitleEdit, setIsTitleEdit] = useState(false);
   const [isDescEdit, setIsDescEdit] = useState(false);
-  const isLoadingDelete = useTodoListStore((state) => state.isDeleteLoading);
+  const [isLoadingState, setIsLoadingState] = useState({
+    delete: false,
+    update: false,
+  });
 
   const handleOpenModal = () => {
     setIsOpen(true);
@@ -44,15 +47,27 @@ const TaskCard: FC<Props> = ({ task, onDelete }) => {
   };
 
   const onDeleteTask = async () => {
+    setIsLoadingState({ ...isLoadingState, delete: true });
     await onDelete(task);
+    setIsLoadingState({ ...isLoadingState, delete: false });
   };
 
   const onFavoriteClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
   };
 
-  const onCompleteClick = (e: MouseEvent<HTMLButtonElement>) => {
+  const onCompleteClick = async (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
+    setIsLoadingState({ ...isLoadingState, update: true });
+    const currentComplete = task.attributes.status;
+    await onUpdate({
+      ...task,
+      attributes: {
+        ...task.attributes,
+        status: currentComplete === 'Выполнено' ? 'Не выполнено' : 'Выполнено',
+      },
+    });
+    setIsLoadingState({ ...isLoadingState, update: false });
   };
 
   return (
@@ -67,6 +82,7 @@ const TaskCard: FC<Props> = ({ task, onDelete }) => {
                 task.attributes.status === 'Выполнено' ? 'primary' : 'default'
               }
               icon={<CheckOutlined />}
+              loading={isLoadingState.update}
               onClick={onCompleteClick}
             />
             <Typography.Title level={4} style={{ marginBottom: 0 }}>
@@ -92,7 +108,7 @@ const TaskCard: FC<Props> = ({ task, onDelete }) => {
         open={isOpen}
         onCancel={handleCloseModal}
         footer={[
-          <Button onClick={onDeleteTask} danger loading={isLoadingDelete}>
+          <Button onClick={onDeleteTask} danger loading={isLoadingState.delete}>
             Удалить
           </Button>,
           <Button onClick={handleCloseModal} type="primary">

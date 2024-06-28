@@ -10,7 +10,6 @@ type State = {
   filter: TaskFilter;
   tasks: Task[] | null;
   isCreateLoading: boolean;
-  isDeleteLoading: boolean;
   isLoading: boolean;
   error: string;
 };
@@ -20,13 +19,13 @@ type Action = {
   getTasks: () => void;
   createTask: (data: CreateTaskData) => void;
   deleteTask: (id: number) => void;
+  updateTask: (task: Task) => void;
 };
 
 const useTodoListStore = create<State & Action>((set) => ({
   filter: 'Все',
   tasks: mockTasks,
   isCreateLoading: false,
-  isDeleteLoading: false,
   isLoading: false,
   error: '',
 
@@ -62,16 +61,27 @@ const useTodoListStore = create<State & Action>((set) => ({
 
   deleteTask: async (id) => {
     try {
-      set({ isDeleteLoading: true });
       await TaskApi.deleteTask(id);
-      set({ isDeleteLoading: false });
       set((state) => ({
         tasks: state.tasks
           ? state.tasks.filter((task) => task.id !== id)
           : null,
       }));
     } catch (e) {
-      set({ isDeleteLoading: false });
+      if (e instanceof Error) set({ error: e.message });
+      else set({ error: 'Произошла неизвенстная ошибка' });
+    }
+  },
+
+  updateTask: async (task) => {
+    try {
+      const newTask = await TaskApi.updateTask(task);
+      set((state) => ({
+        tasks: state.tasks
+          ? state.tasks.map((item) => (item.id === newTask.id ? newTask : item))
+          : null,
+      }));
+    } catch (e) {
       if (e instanceof Error) set({ error: e.message });
       else set({ error: 'Произошла неизвенстная ошибка' });
     }

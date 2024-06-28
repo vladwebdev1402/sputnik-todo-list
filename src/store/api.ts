@@ -21,6 +21,21 @@ class TaskApi {
   static async deleteTask(id: number) {
     await axiosInstance.delete(`/tasks/${id}`);
   }
+
+  static async updateTask(task: Task) {
+    const result = await axiosInstance.put<{ data: Task }>(
+      `/tasks/${task.id}`,
+      {
+        data: {
+          title: task.attributes.title,
+          description: task.attributes.description,
+          status: task.attributes.status,
+        },
+      }
+    );
+
+    return result.data.data;
+  }
 }
 
 export { TaskApi };
