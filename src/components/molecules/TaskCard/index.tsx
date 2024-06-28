@@ -1,9 +1,11 @@
 import { FC, MouseEvent, useState } from 'react';
+import TextArea from 'antd/es/input/TextArea';
 import { Button, Card, Flex, Typography, Modal, Input } from 'antd';
 import { CheckOutlined, EditOutlined, HeartOutlined } from '@ant-design/icons';
 
 import { Task } from '@/types';
-import TextArea from 'antd/es/input/TextArea';
+
+import { TaskCardSkeleton } from './TaskCardSkeleton';
 
 type Props = {
   task: Task;
@@ -133,4 +135,4 @@ const TaskCard: FC<Props> = ({ task }) => {
   );
 };
 
-export { TaskCard };
+export { TaskCard, TaskCardSkeleton };
