@@ -10,4 +10,6 @@ type Task = {
   };
 };
 
-export type { Task };
+type TaskFilter = 'Все' | 'Не выполнено' | 'Выполнено' | 'Избранные';
+
+export type { Task, TaskFilter };
