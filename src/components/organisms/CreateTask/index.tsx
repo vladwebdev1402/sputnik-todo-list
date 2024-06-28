@@ -51,8 +51,9 @@ const CreateTask = () => {
     });
   };
 
-  const onTaskCreateSubmit = () => {
-    createTask(task);
+  const onTaskCreateSubmit = async () => {
+    await createTask(task);
+    handleCloseModal();
   };
 
   return (
