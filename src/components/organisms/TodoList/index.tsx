@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Container, ErrorMessage } from '@/components/atoms';
 import { TaskCard } from '@/components/molecules';
 import { useTodoListStore } from '@/store';
+import { Task } from '@/types';
 
 import { InfiniteScroll } from '../InfiniteScroll';
 import { TodoListSkeleton } from './TodoListSkeleton';
@@ -19,9 +20,14 @@ const TodoList = () => {
   const isLoading = useTodoListStore((state) => state.isLoading);
   const error = useTodoListStore((state) => state.error);
   const getTasks = useTodoListStore((state) => state.getTasks);
+  const deleteTask = useTodoListStore((state) => state.deleteTask);
 
   const onObserve = () => {
     console.log('Изменить максимальную длинну');
+  };
+
+  const onDeleteTask = async (task: Task) => {
+    await deleteTask(task.id);
   };
 
   useEffect(() => {
@@ -54,7 +60,7 @@ const TodoList = () => {
         <Container>
           <Space direction="vertical" style={{ display: 'flex' }}>
             {tasks.map((task) => (
-              <TaskCard task={task} key={task.id} />
+              <TaskCard task={task} onDelete={onDeleteTask} key={task.id} />
             ))}
           </Space>
           <InfiniteScroll

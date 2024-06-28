@@ -6,15 +6,18 @@ import { CheckOutlined, EditOutlined, HeartOutlined } from '@ant-design/icons';
 import { Task } from '@/types';
 
 import { TaskCardSkeleton } from './TaskCardSkeleton';
+import { useTodoListStore } from '@/store';
 
 type Props = {
   task: Task;
+  onDelete: (task: Task) => void;
 };
 
-const TaskCard: FC<Props> = ({ task }) => {
+const TaskCard: FC<Props> = ({ task, onDelete }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isTitleEdit, setIsTitleEdit] = useState(false);
   const [isDescEdit, setIsDescEdit] = useState(false);
+  const isLoadingDelete = useTodoListStore((state) => state.isDeleteLoading);
 
   const handleOpenModal = () => {
     setIsOpen(true);
@@ -38,6 +41,10 @@ const TaskCard: FC<Props> = ({ task }) => {
 
   const onDescBlur = () => {
     onDescEditChange();
+  };
+
+  const onDeleteTask = async () => {
+    await onDelete(task);
   };
 
   const onFavoriteClick = (e: MouseEvent<HTMLButtonElement>) => {
@@ -85,7 +92,7 @@ const TaskCard: FC<Props> = ({ task }) => {
         open={isOpen}
         onCancel={handleCloseModal}
         footer={[
-          <Button onClick={handleCloseModal} danger>
+          <Button onClick={onDeleteTask} danger loading={isLoadingDelete}>
             Удалить
           </Button>,
           <Button onClick={handleCloseModal} type="primary">
