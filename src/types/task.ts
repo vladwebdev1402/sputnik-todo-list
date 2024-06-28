@@ -3,13 +3,14 @@ type Task = {
   attributes: {
     title: string;
     description: string;
-    status: 'Выполнено' | 'Не выполнено';
+    status: TaskStatus;
     createdAt: string;
     updatedAt: string;
     publishedAt: string;
   };
 };
 
+type TaskStatus = 'Выполнено' | 'Не выполнено';
 type TaskFilter = 'Все' | 'Не выполнено' | 'Выполнено' | 'Избранные';
 
-export type { Task, TaskFilter };
+export type { Task, TaskFilter, TaskStatus };

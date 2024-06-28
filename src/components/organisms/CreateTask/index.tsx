@@ -7,13 +7,24 @@ import {
   Input,
   Modal,
   Space,
+  Switch,
   Typography,
 } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { ChangeEvent, useState } from 'react';
 
+import { useTodoListStore } from '@/store';
+
+import { TaskFormData } from './type';
+
 const CreateTask = () => {
-  const [task, setTask] = useState({ title: '', description: '' });
+  const createTask = useTodoListStore((state) => state.createTask);
+  const isCreateLoading = useTodoListStore((state) => state.isCreateLoading);
+  const [task, setTask] = useState<TaskFormData>({
+    title: '',
+    description: '',
+    status: 'Не выполнено',
+  });
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpenModal = () => {
@@ -22,7 +33,7 @@ const CreateTask = () => {
 
   const handleCloseModal = () => {
     setIsOpen(false);
-    setTask({ title: '', description: '' });
+    setTask({ title: '', description: '', status: 'Не выполнено' });
   };
 
   const onTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -33,8 +44,15 @@ const CreateTask = () => {
     setTask({ ...task, description: e.target.value });
   };
 
+  const onStatusChange = () => {
+    setTask({
+      ...task,
+      status: task.status === 'Не выполнено' ? 'Выполнено' : 'Не выполнено',
+    });
+  };
+
   const onTaskCreateSubmit = () => {
-    console.log(123);
+    createTask(task);
   };
 
   return (
@@ -65,8 +83,19 @@ const CreateTask = () => {
               value={task.description}
               onChange={onDescChange}
             />
+            <Flex gap={10}>
+              <Switch
+                value={task.status === 'Выполнено'}
+                onClick={onStatusChange}
+              />
+              <Typography> Задача не выполнена/выполнена</Typography>
+            </Flex>
             <Flex style={{ marginTop: '16px' }} gap={10} justify="end">
-              <Button type="primary" htmlType="submit">
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={isCreateLoading}
+              >
                 Создать
               </Button>
               <Button htmlType="button" onClick={handleCloseModal}>
