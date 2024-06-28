@@ -1,11 +1,11 @@
 import { FC, MouseEvent, useState } from 'react';
-import TextArea from 'antd/es/input/TextArea';
-import { Button, Card, Flex, Typography, Modal, Input } from 'antd';
-import { CheckOutlined, EditOutlined, HeartOutlined } from '@ant-design/icons';
+import { Button, Card, Flex, Typography, Modal } from 'antd';
+import { CheckOutlined, HeartOutlined } from '@ant-design/icons';
 
 import { Task } from '@/types';
 
 import { TaskCardSkeleton } from './TaskCardSkeleton';
+import { DescriptionInput, TitleInput } from '@/components/atoms';
 
 type Props = {
   task: Task;
@@ -22,16 +22,11 @@ const TaskCard: FC<Props> = ({
   onUpdate,
   onChangeFavorite,
 }) => {
-  const [taskValues, setTaskValues] = useState({
-    title: task.attributes.title,
-    description: task.attributes.description,
-  });
   const [isOpen, setIsOpen] = useState(false);
-  const [isTitleEdit, setIsTitleEdit] = useState(false);
-  const [isDescEdit, setIsDescEdit] = useState(false);
   const [isLoadingState, setIsLoadingState] = useState({
     delete: false,
     update: false,
+    form: false,
   });
 
   const handleOpenModal = () => {
@@ -42,20 +37,28 @@ const TaskCard: FC<Props> = ({
     setIsOpen(false);
   };
 
-  const onTitleEditChange = () => {
-    setIsTitleEdit(!isTitleEdit);
+  const onUpdateDesc = async (description: string) => {
+    setIsLoadingState({ ...isLoadingState, form: true });
+    await onUpdate({
+      ...task,
+      attributes: {
+        ...task.attributes,
+        description,
+      },
+    });
+    setIsLoadingState({ ...isLoadingState, form: false });
   };
 
-  const onDescEditChange = () => {
-    setIsDescEdit(!isDescEdit);
-  };
-
-  const onTitleBlur = () => {
-    onTitleEditChange();
-  };
-
-  const onDescBlur = () => {
-    onDescEditChange();
+  const onUpdateTitle = async (title: string) => {
+    setIsLoadingState({ ...isLoadingState, form: true });
+    await onUpdate({
+      ...task,
+      attributes: {
+        ...task.attributes,
+        title,
+      },
+    });
+    setIsLoadingState({ ...isLoadingState, form: false });
   };
 
   const onDeleteTask = async () => {
@@ -99,7 +102,7 @@ const TaskCard: FC<Props> = ({
               onClick={onCompleteClick}
             />
             <Typography.Title level={4} style={{ marginBottom: 0 }}>
-              {task.attributes.title}
+              {task.attributes.title || 'untitled'}
             </Typography.Title>
           </Flex>
         }
@@ -130,42 +133,17 @@ const TaskCard: FC<Props> = ({
           </Button>,
         ]}
         title={
-          <Flex align="center" gap={10}>
-            <Button
-              shape="circle"
-              type="text"
-              icon={<EditOutlined />}
-              onClick={onTitleEditChange}
-            />
-            {isTitleEdit ? (
-              <Input value={taskValues.title} autoFocus onBlur={onTitleBlur} />
-            ) : (
-              <Typography>{task.attributes.title}</Typography>
-            )}
-          </Flex>
+          <TitleInput
+            onUpdateTitle={onUpdateTitle}
+            currentTitle={task.attributes.title || 'untitled'}
+            isLoading={isLoadingState.form}
+          />
         }
       >
-        <Flex gap={10}>
-          {isDescEdit ? (
-            <TextArea
-              value={taskValues.description}
-              autoFocus
-              style={{ resize: 'none', height: '120px' }}
-              onBlur={onDescBlur}
-            />
-          ) : (
-            <Button
-              type="text"
-              onClick={onDescEditChange}
-              style={{ width: '100%', display: 'block', textAlign: 'left' }}
-            >
-              <Typography>
-                {task.attributes.description ||
-                  'Нажмите, чтобы добавить описание'}
-              </Typography>
-            </Button>
-          )}
-        </Flex>
+        <DescriptionInput
+          currentDesc={task.attributes.description}
+          onUpdateDesc={onUpdateDesc}
+        />
       </Modal>
     </>
   );
