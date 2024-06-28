@@ -45,6 +45,39 @@ const mockTasks: Task[] = [
       publishedAt: '2024-06-28T00:50:13.740Z',
     },
   },
+  {
+    id: 1595,
+    attributes: {
+      title: 'dsad',
+      description: 'adsds',
+      status: 'Не выполнено',
+      createdAt: '2024-06-28T00:50:13.740Z',
+      updatedAt: '2024-06-28T00:50:13.740Z',
+      publishedAt: '2024-06-28T00:50:13.740Z',
+    },
+  },
+  {
+    id: 1596,
+    attributes: {
+      title: 'dsad',
+      description: 'adsds',
+      status: 'Не выполнено',
+      createdAt: '2024-06-28T00:50:13.740Z',
+      updatedAt: '2024-06-28T00:50:13.740Z',
+      publishedAt: '2024-06-28T00:50:13.740Z',
+    },
+  },
+  {
+    id: 1597,
+    attributes: {
+      title: 'dsad',
+      description: 'adsds',
+      status: 'Не выполнено',
+      createdAt: '2024-06-28T00:50:13.740Z',
+      updatedAt: '2024-06-28T00:50:13.740Z',
+      publishedAt: '2024-06-28T00:50:13.740Z',
+    },
+  },
 ];
 
 export { mockTasks };
