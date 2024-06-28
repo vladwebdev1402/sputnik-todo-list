@@ -6,6 +6,7 @@ import { Container, ErrorMessage } from '@/components/atoms';
 import { TaskCard } from '@/components/molecules';
 import { useTodoListStore } from '@/store';
 import { Task } from '@/types';
+import { LIMIT } from '@/constants';
 
 import { InfiniteScroll } from '../InfiniteScroll';
 import { TodoListSkeleton } from './TodoListSkeleton';
@@ -20,13 +21,16 @@ const TodoList = () => {
   const isLoading = useTodoListStore((state) => state.isLoading);
   const error = useTodoListStore((state) => state.error);
   const favorites = useTodoListStore((state) => state.favorites);
+  const limit = useTodoListStore((state) => state.limit);
+  const total = useTodoListStore((state) => state.total);
   const getTasks = useTodoListStore((state) => state.getTasks);
   const deleteTask = useTodoListStore((state) => state.deleteTask);
   const updateTask = useTodoListStore((state) => state.updateTask);
   const changeFavorite = useTodoListStore((state) => state.changeFavorite);
+  const incrementLimit = useTodoListStore((state) => state.incrementLimit);
 
   const onObserve = () => {
-    console.log('Изменить максимальную длинну');
+    incrementLimit();
   };
 
   const onDeleteTask = async (task: Task) => {
@@ -42,10 +46,10 @@ const TodoList = () => {
   };
 
   useEffect(() => {
-    getTasks();
-  }, [getTasks]);
+    getTasks(limit);
+  }, [getTasks, limit]);
 
-  if (isLoading) {
+  if (isLoading && limit === LIMIT) {
     return (
       <TodoWrapper>
         <Container>
@@ -82,9 +86,9 @@ const TodoList = () => {
             ))}
           </Space>
           <InfiniteScroll
-            isLoading={false}
-            isStopScroll={false}
-            loader={'Загрузка'}
+            isLoading={isLoading}
+            isStopScroll={limit >= total}
+            loader={<TodoListSkeleton countTasks={3} />}
             onObserve={onObserve}
           />
         </Container>

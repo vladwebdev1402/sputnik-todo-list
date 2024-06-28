@@ -2,12 +2,15 @@ import { create } from 'zustand';
 
 import { Task, TaskFilter } from '@/types';
 import { LocalStorageService } from '@/api';
+import { LIMIT } from '@/constants';
 
 import { TaskApi } from './api';
 import { CreateTaskData } from './types';
 
 type State = {
   filter: TaskFilter;
+  limit: number;
+  total: number;
   tasks: Task[] | null;
   favorites: number[];
   isCreateLoading: boolean;
@@ -18,7 +21,8 @@ type State = {
 type Action = {
   changeFilter: (filter: State['filter']) => void;
   changeFavorite: (id: number) => void;
-  getTasks: () => void;
+  incrementLimit: () => void;
+  getTasks: (limit: number) => void;
   createTask: (data: CreateTaskData) => void;
   deleteTask: (id: number) => void;
   updateTask: (task: Task) => void;
@@ -28,11 +32,15 @@ const useTodoListStore = create<State & Action>((set) => ({
   filter: 'Все',
   tasks: null,
   favorites: LocalStorageService.getFavorites(),
+  limit: LIMIT,
+  total: 10000,
   isCreateLoading: false,
   isLoading: false,
   error: '',
 
   changeFilter: (filter) => set(() => ({ filter })),
+
+  incrementLimit: () => set((state) => ({ limit: state.limit + LIMIT })),
 
   changeFavorite: (id) => {
     set((state) => {
@@ -45,12 +53,13 @@ const useTodoListStore = create<State & Action>((set) => ({
     });
   },
 
-  getTasks: async () => {
+  getTasks: async (limit) => {
     try {
       set({ isLoading: true });
-      const result = await TaskApi.getTasks();
+      const result = await TaskApi.getTasks(limit);
       set({ isLoading: false });
-      set({ tasks: result });
+      set({ tasks: result.data });
+      set({ total: result.meta.pagination.total });
     } catch (e) {
       set({ isLoading: false });
       if (e instanceof Error) set({ error: e.message });

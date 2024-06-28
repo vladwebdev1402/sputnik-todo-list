@@ -4,9 +4,12 @@ import { Task } from '@/types';
 import { CreateTaskData } from './types';
 
 class TaskApi {
-  static async getTasks() {
-    const result = await axiosInstance.get<{ data: Task[] }>('/tasks');
-    return result.data.data;
+  static async getTasks(limit: number) {
+    const result = await axiosInstance.get<{
+      data: Task[];
+      meta: { pagination: { total: number } };
+    }>(`/tasks?pagination[limit]=${limit}`);
+    return result.data;
   }
 
   static async createTask(task: CreateTaskData) {
