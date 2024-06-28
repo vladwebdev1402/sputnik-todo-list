@@ -1,7 +1,7 @@
 import { Layout, Typography } from 'antd';
 import { Content, Header } from 'antd/es/layout/layout';
 
-import { TodoList } from '@/components/organisms';
+import { CreateTask, TodoList } from '@/components/organisms';
 
 const MainPage = () => {
   return (
@@ -13,6 +13,7 @@ const MainPage = () => {
       </Header>
       <Content>
         <TodoList />
+        <CreateTask />
       </Content>
     </Layout>
   );
