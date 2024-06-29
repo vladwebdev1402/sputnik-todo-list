@@ -42,6 +42,26 @@ const useTodoListStore = create<State & Action>((set) => ({
   getTasks: async (limit, filter) => {
     try {
       set({ isLoading: true });
+      set({ error: '' });
+
+      if (filter.value === 'Избранные') {
+        const result = await TaskApi.getFavorites(
+          LocalStorageService.getFavorites()
+        );
+
+        const newFavorites = LocalStorageService.getFavorites().filter(
+          (id) => !result.rejectedIdFavorites.includes(id)
+        );
+
+        set({ favorites: newFavorites });
+        LocalStorageService.setFavorites(newFavorites);
+
+        set({ tasks: result.successTask });
+        set({ total: result.successTask.length });
+        set({ isLoading: false });
+        return;
+      }
+
       const result = await TaskApi.getTasks(limit, filter);
       set({ isLoading: false });
       set({ tasks: result.data });
@@ -55,6 +75,7 @@ const useTodoListStore = create<State & Action>((set) => ({
 
   createTask: async (task) => {
     try {
+      set({ error: '' });
       const newTask = await TaskApi.createTask(task);
       set((state) => ({
         tasks: state.tasks ? [newTask, ...state.tasks] : null,
@@ -67,6 +88,7 @@ const useTodoListStore = create<State & Action>((set) => ({
 
   deleteTask: async (id) => {
     try {
+      set({ error: '' });
       await TaskApi.deleteTask(id);
       set((state) => ({
         tasks: state.tasks
@@ -81,6 +103,7 @@ const useTodoListStore = create<State & Action>((set) => ({
 
   updateTask: async (task) => {
     try {
+      set({ error: '' });
       const newTask = await TaskApi.updateTask(task);
       set((state) => ({
         tasks: state.tasks

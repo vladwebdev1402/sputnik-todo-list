@@ -125,10 +125,15 @@ const TaskCard: FC<Props> = ({
         open={isOpen}
         onCancel={handleCloseModal}
         footer={[
-          <Button onClick={onDeleteTask} danger loading={isLoadingState.delete}>
+          <Button
+            onClick={onDeleteTask}
+            danger
+            loading={isLoadingState.delete}
+            key={1}
+          >
             Удалить
           </Button>,
-          <Button onClick={handleCloseModal} type="primary">
+          <Button onClick={handleCloseModal} type="primary" key={2}>
             Закрыть
           </Button>,
         ]}

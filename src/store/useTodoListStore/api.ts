@@ -16,6 +16,33 @@ class TaskApi {
     return result.data;
   }
 
+  static async getTask(id: number) {
+    try {
+      const result = await axiosInstance.get<{ data: Task }>(`/tasks/${id}`);
+      return result.data.data;
+    } catch (error) {
+      return id;
+    }
+  }
+
+  static async getFavorites(favorites: number[]) {
+    const rejectedIdFavorites: number[] = [];
+    const successTask: Task[] = [];
+
+    const result = await Promise.allSettled(
+      favorites.map((id) => this.getTask(id))
+    );
+
+    result.forEach((item) => {
+      if (item.status === 'fulfilled' && typeof item.value !== 'number')
+        successTask.push(item.value);
+      if ('value' in item && typeof item.value === 'number')
+        rejectedIdFavorites.push(item.value);
+    });
+
+    return { successTask, rejectedIdFavorites };
+  }
+
   static async createTask(task: CreateTaskData) {
     const result = await axiosInstance.post<{ data: Task }>('/tasks', {
       data: {
