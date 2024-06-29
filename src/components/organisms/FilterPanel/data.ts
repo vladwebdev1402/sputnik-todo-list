@@ -1,26 +1,25 @@
-import { TaskFilter } from "@/types";
+import { TaskFilter } from '@/types';
 
-type Filter = {
-  name: string;
-  value: TaskFilter;
-};
-
-const filters: Filter[] = [
+const filters: TaskFilter[] = [
   {
     name: 'Все',
     value: 'Все',
+    field: '',
   },
   {
     name: 'Не выполненные',
     value: 'Не выполнено',
+    field: 'filters[status]',
   },
   {
     name: 'Выполненные',
     value: 'Выполнено',
+    field: 'filters[status]',
   },
   {
     name: 'Избранные',
     value: 'Избранные',
+    field: '',
   },
 ];
 

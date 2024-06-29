@@ -1,14 +1,18 @@
 import { axiosInstance } from '@/api';
-import { Task } from '@/types';
+import { Task, TaskFilter } from '@/types';
 
 import { CreateTaskData } from './types';
 
 class TaskApi {
-  static async getTasks(limit: number) {
+  static async getTasks(limit: number, filter: TaskFilter) {
     const result = await axiosInstance.get<{
       data: Task[];
       meta: { pagination: { total: number } };
-    }>(`/tasks?pagination[limit]=${limit}`);
+    }>(
+      `/tasks?pagination[limit]=${limit}&${
+        filter.value !== '' ? `${filter.field}=${filter.value}` : ''
+      }`
+    );
     return result.data;
   }
 

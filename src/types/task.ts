@@ -11,6 +11,10 @@ type Task = {
 };
 
 type TaskStatus = 'Выполнено' | 'Не выполнено';
-type TaskFilter = 'Все' | 'Не выполнено' | 'Выполнено' | 'Избранные';
+type TaskFilter = {
+  name: string;
+  value: string;
+  field: string;
+};
 
 export type { Task, TaskFilter, TaskStatus };

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Container, ErrorMessage } from '@/components/atoms';
 import { TaskCard } from '@/components/molecules';
-import { useTodoListStore } from '@/store';
+import { useTodoFilters, useTodoListStore } from '@/store';
 import { Task } from '@/types';
 import { LIMIT } from '@/constants';
 
@@ -21,13 +21,15 @@ const TodoList = () => {
   const isLoading = useTodoListStore((state) => state.isLoading);
   const error = useTodoListStore((state) => state.error);
   const favorites = useTodoListStore((state) => state.favorites);
-  const limit = useTodoListStore((state) => state.limit);
   const total = useTodoListStore((state) => state.total);
   const getTasks = useTodoListStore((state) => state.getTasks);
   const deleteTask = useTodoListStore((state) => state.deleteTask);
   const updateTask = useTodoListStore((state) => state.updateTask);
   const changeFavorite = useTodoListStore((state) => state.changeFavorite);
-  const incrementLimit = useTodoListStore((state) => state.incrementLimit);
+
+  const filter = useTodoFilters((state) => state.filter);
+  const limit = useTodoFilters((state) => state.limit);
+  const incrementLimit = useTodoFilters((state) => state.incrementLimit);
 
   const onObserve = () => {
     incrementLimit();
@@ -46,8 +48,8 @@ const TodoList = () => {
   };
 
   useEffect(() => {
-    getTasks(limit);
-  }, [getTasks, limit]);
+    getTasks(limit, filter);
+  }, [getTasks, limit, filter]);
 
   if (isLoading && limit === LIMIT) {
     return (
@@ -69,7 +71,20 @@ const TodoList = () => {
     );
   }
 
-  if (tasks !== null && !error)
+  if (tasks !== null && tasks.length === 0) {
+    return (
+      <TodoWrapper>
+        <Container>
+          <ErrorMessage
+            title="Список задач пуст"
+            description={'Создайте новую задачу или смените фильтры'}
+          />
+        </Container>
+      </TodoWrapper>
+    );
+  }
+
+  if (tasks !== null)
     return (
       <TodoWrapper>
         <Container>

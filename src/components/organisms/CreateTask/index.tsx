@@ -18,8 +18,8 @@ import { useTodoListStore } from '@/store';
 import { TaskFormData } from './type';
 
 const CreateTask = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const createTask = useTodoListStore((state) => state.createTask);
-  const isCreateLoading = useTodoListStore((state) => state.isCreateLoading);
   const [task, setTask] = useState<TaskFormData>({
     title: '',
     description: '',
@@ -52,7 +52,9 @@ const CreateTask = () => {
   };
 
   const onTaskCreateSubmit = async () => {
+    setIsLoading(true);
     await createTask(task);
+    setIsLoading(false);
     handleCloseModal();
   };
 
@@ -92,11 +94,7 @@ const CreateTask = () => {
               <Typography> Задача не выполнена/выполнена</Typography>
             </Flex>
             <Flex style={{ marginTop: '16px' }} gap={10} justify="end">
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={isCreateLoading}
-              >
+              <Button type="primary" htmlType="submit" loading={isLoading}>
                 Создать
               </Button>
               <Button htmlType="button" onClick={handleCloseModal}>
