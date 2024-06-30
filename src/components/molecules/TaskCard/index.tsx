@@ -80,7 +80,7 @@ const TaskCard: FC<Props> = ({
       ...task,
       attributes: {
         ...task.attributes,
-        status: currentComplete === 'Выполнено' ? 'Не выполнено' : 'Выполнено',
+        status: currentComplete === 'complete' ? 'uncomplete' : 'complete',
       },
     });
     setIsLoadingState({ ...isLoadingState, update: false });
@@ -95,7 +95,7 @@ const TaskCard: FC<Props> = ({
             <Button
               shape="circle"
               type={
-                task.attributes.status === 'Выполнено' ? 'primary' : 'default'
+                task.attributes.status === 'complete' ? 'primary' : 'default'
               }
               icon={<CheckOutlined />}
               loading={isLoadingState.update}
