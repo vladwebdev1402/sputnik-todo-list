@@ -1,14 +1,11 @@
 import { axiosInstance } from '@/api';
 import { Task, TaskFilter } from '@/types';
 
-import { CreateTaskData } from './types';
+import { CreateTaskData, GetTasksResponse } from './types';
 
 class TaskApi {
   static async getTasks(limit: number, filter: TaskFilter) {
-    const result = await axiosInstance.get<{
-      data: Task[];
-      meta: { pagination: { total: number } };
-    }>(
+    const result = await axiosInstance.get<GetTasksResponse>(
       `/tasks?pagination[limit]=${limit}&${
         filter.value !== '' ? `${filter.field}=${filter.value}` : ''
       }`
