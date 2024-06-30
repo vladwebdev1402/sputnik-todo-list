@@ -7,7 +7,7 @@ type Task = {
   };
 };
 
-type TaskStatus = 'Выполнено' | 'Не выполнено';
+type TaskStatus = 'complete' | 'uncomplete';
 type TaskFilter = {
   name: string;
   value: string;

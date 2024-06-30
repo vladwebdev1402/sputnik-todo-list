@@ -23,7 +23,7 @@ const CreateTask = () => {
   const [task, setTask] = useState<TaskFormData>({
     title: '',
     description: '',
-    status: 'Не выполнено',
+    status: 'uncomplete',
   });
   const [isOpen, setIsOpen] = useState(false);
 
@@ -33,7 +33,7 @@ const CreateTask = () => {
 
   const handleCloseModal = () => {
     setIsOpen(false);
-    setTask({ title: '', description: '', status: 'Не выполнено' });
+    setTask({ title: '', description: '', status: 'uncomplete' });
   };
 
   const onTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +47,7 @@ const CreateTask = () => {
   const onStatusChange = () => {
     setTask({
       ...task,
-      status: task.status === 'Не выполнено' ? 'Выполнено' : 'Не выполнено',
+      status: task.status === 'uncomplete' ? 'complete' : 'uncomplete',
     });
   };
 
@@ -88,7 +88,7 @@ const CreateTask = () => {
             />
             <Flex gap={10}>
               <Switch
-                value={task.status === 'Выполнено'}
+                value={task.status === 'complete'}
                 onClick={onStatusChange}
               />
               <Typography> Задача не выполнена/выполнена</Typography>

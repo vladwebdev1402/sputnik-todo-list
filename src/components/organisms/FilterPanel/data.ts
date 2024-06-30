@@ -8,12 +8,12 @@ const filters: TaskFilter[] = [
   },
   {
     name: 'Не выполненные',
-    value: 'Не выполнено',
+    value: 'uncomplete',
     field: 'filters[status]',
   },
   {
     name: 'Выполненные',
-    value: 'Выполнено',
+    value: 'complete',
     field: 'filters[status]',
   },
   {

@@ -2,13 +2,12 @@ import { useEffect } from 'react';
 import { Space } from 'antd';
 import styled from 'styled-components';
 
-import { Container, ErrorMessage } from '@/components/atoms';
+import { Container, ErrorMessage, InfiniteScroll } from '@/components/atoms';
 import { TaskCard } from '@/components/molecules';
 import { useTodoFilters, useTodoListStore } from '@/store';
 import { Task } from '@/types';
 import { LIMIT } from '@/constants';
 
-import { InfiniteScroll } from '../InfiniteScroll';
 import { TodoListSkeleton } from './TodoListSkeleton';
 
 const TodoWrapper = styled.div`

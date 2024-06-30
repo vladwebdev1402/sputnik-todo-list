@@ -1,11 +1,11 @@
 import { Button, Flex } from 'antd';
+import styled from 'styled-components';
 
 import { Container } from '@/components/atoms';
 import { TaskFilter } from '@/types';
+import { useTodoFilters } from '@/store';
 
 import { filters } from './data';
-import styled from 'styled-components';
-import { useTodoFilters } from '@/store';
 
 const FilterWrapper = styled.div`
   margin-top: 32px;
